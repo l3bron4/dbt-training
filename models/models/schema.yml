@@ -1,0 +1,111 @@
+version: 2
+
+models:
+  - name: dim_corpo_employee
+    description: "table with users professional informations"
+    columns:
+      - name: user_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_corpo_subscription_income
+    description: "all organisation month incomes since subscription to service"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+         arguments:
+           combination_of_columns:
+             - month
+             - organisation_id    
+    columns:
+      - name: month
+        description: "The primary key for this table combine with organisation_id"
+        tests:
+          - not_null
+      - name: organisation_id
+        description: "The primary key for this table combine with month"
+        tests:
+          - not_null
+
+  - name: fact_travel_car_booking
+    description: "all car booking informations per user"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+         arguments:
+           combination_of_columns:
+             - user_id
+             - booking_reference
+    columns:
+      - name: booking_reference
+        description: "The primary key for this table combine with user_id"
+        tests:
+          - not_null
+      - name: user_id
+        description: "The primary key for this table combine with booking_reference"
+        tests:
+          - not_null
+
+  - name: fact_travel_hotel_booking
+    description: "all hotel booking informations per user"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+         arguments:
+           combination_of_columns:
+             - booking_reference
+             - user_id        
+    columns:
+      - name: booking_reference
+        description: "The primary key for this table combine with user_id"
+        tests:
+          - not_null
+      - name: user_id
+        description: "The primary key for this table combine with booking_reference"
+        tests:
+          - not_null
+
+  - name: fact_travel_income
+    description: "All travel incomes (hotel & car) per day, product type and organisation"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+         arguments:
+           combination_of_columns:
+             - day
+             - product_type
+             - organisation_id   
+    columns:
+      - name: income
+        description: "income = SUM(booking_price * commission_percentage). GROUP BY day, product_type, organisation_id"
+      - name: day
+        description: "The primary key for this table combine with product_type & organisation_id"
+        tests:
+          - not_null
+      - name: product_type
+        description: "The primary key for this table combine with day & organisation_id"
+        tests:
+          - not_null
+      - name: organisation_id
+        description: "The primary key for this table combine with day & product_type"
+        tests:
+          - not_null
+
+  - name: fact_income_monthly
+    description: "all company incomes per month per product_type (CORPO_SUB, TRAVEL_CAR, TRAVEL_HOTEL)"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+         arguments:
+           combination_of_columns:
+             - month
+             - product_type
+    
+    columns:
+      - name: income
+        description: "income = SUM(income). GROUP BY month and product_type"
+      - name: month
+        description: "The primary key for this table combine with product_type"
+        tests:
+          - not_null
+      - name: product_type
+        description: "The primary key for this table combine with month"
+        tests:
+          - not_null
