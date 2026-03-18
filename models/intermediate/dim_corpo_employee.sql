@@ -9,7 +9,7 @@ SELECT
     users.organisation_id,
     organisations.organisation_name,
     organisations.pricing_plan,
-    organisations.subscribed_at
-FROM {{ source('modelisation_sources', 'users') }} AS users
-LEFT JOIN {{ source('modelisation_sources', 'organisations') }} AS organisations
+    organisations.subscribed_at 
+FROM {{ ref('stg_modelisation_sources__users') }} AS users
+LEFT JOIN {{ ref('stg_modelisation_sources__users') }} AS organisations
     ON users.organisation_id = organisations.id
