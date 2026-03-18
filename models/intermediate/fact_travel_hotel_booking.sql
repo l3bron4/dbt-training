@@ -15,6 +15,6 @@ SELECT
     hotels.name AS hotel_name,
     rooms.id AS hotel_room_id,
     rooms.payment_done_at
-FROM {{ source('modelisation_sources', 'rooms') }} AS rooms
-LEFT JOIN {{ source('modelisation_sources', 'hotels') }} AS hotels
+FROM {{ ref('stg_modelisation_sources__rooms') }} AS rooms
+LEFT JOIN {{ ref('stg_modelisation_sources__hotels') }} AS hotels
     ON hotels.id = rooms.hotel_id

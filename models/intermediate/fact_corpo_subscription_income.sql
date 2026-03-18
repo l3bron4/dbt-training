@@ -18,7 +18,7 @@ WITH first_month_income AS (
             EXTRACT(DAY FROM LAST_DAY(subscribed_at, MONTH)) - EXTRACT(DAY FROM subscribed_at) AS remaining_days_in_month,
             price_per_month,
             pricing_plan        
-        FROM {{ source('modelisation_sources', 'organisations') }}
+        FROM {{ ref('stg_modelisation_sources__organisations') }} AS organisations
     )
 )
 
@@ -30,8 +30,8 @@ WITH first_month_income AS (
         organisations.organisation_name,
         organisations.price_per_month AS income,
         organisations.pricing_plan
-    FROM {{ source('modelisation_sources', 'organisations') }} AS organisations
-    JOIN {{ source('modelisation_sources', 'calendrier_months') }} AS calendrier_months
+    FROM {{ ref('stg_modelisation_sources__organisations') }} AS organisations
+    JOIN {{ ref('stg_modelisation_sources__calendrier_months') }} AS calendrier_months
         ON calendrier_months.month > organisations.subscribed_at 
 )
 
