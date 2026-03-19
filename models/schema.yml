@@ -1,6 +1,18 @@
 version: 2
 
 models:
+  - name: stg_modelisation_sources__organisations
+    columns:
+      - name: id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments :
+                to: ref('stg_modelisation_sources__users')
+                field: organisation_id
+          
   - name: dim_corpo_employee
     description: "table with users professional informations"
     columns:
